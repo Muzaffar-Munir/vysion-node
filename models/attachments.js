@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const attachmentsSchema = new Schema({
-    modeName: String,
     fileName: String,
     fileMd5Name: String,
     fileType: String,
@@ -9,7 +9,9 @@ const attachmentsSchema = new Schema({
     path: String,
     createdAt: String,
     updatedAt: String,
-    fileType: String
-}, { timestamps: true });
+}, {
+    timestamps: true,
+    versionKey: false,
+});
 
 module.exports = mongoose.model('Attachment', attachmentsSchema);
