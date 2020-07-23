@@ -12,7 +12,7 @@ var attachmentsRouter = require('./routes/attachment');
 var app = express();
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-mongoose.connect('mongodb://localhost:27017/vysion',{ useNewUrlParser:  true });
+mongoose.connect('mongodb://localhost:27017/vysion',{ useNewUrlParser:  true,  useUnifiedTopology: true });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
