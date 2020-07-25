@@ -3,12 +3,12 @@ const Schema = mongoose.Schema;
 
 const attachmentsSchema = new Schema({
     fileName: String,
-    fileMd5Name: String,
     fileType: String,
-    fileSize: Number,
+    originalName: String,
+    size: Number,
     path: String,
-    createdAt: String,
-    updatedAt: String,
+    ext: String,
+    type: String
 }, {
     timestamps: true,
     versionKey: false,

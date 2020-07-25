@@ -4,24 +4,39 @@ var multer = require('multer')
 var fs = require('fs');
 var attachmentModel = require('../models/attachments');
 
-var upload = multer({ dest: 'uploads/' })
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const dir = 'uploads';
+        fs.mkdir(dir, err => cb(null, 'uploads'));
+      },
+      filename: function (req, file, cb) {
+        cb(null, Math.round(Math.random() * new Date().getTime()) + file.originalname);
+      }
+})
+var upload = multer({ storage: storage })
 
 
 router.post('/attachment-upload', upload.single('upload'), function(req, res, next) {
-    // req.file is the `avatar` file
-    // req.body will hold the text fields, if there were any
-    var attachment = new attachmentModel(req.body);
-    if (req.body.path) {
-        // req.body.path = decodeBase64Image(req.body.path);
-        getImage(req);
-    }
-    // attachment.save()
-    //     .then(item => {
-    //         res.json(item);
-    //     })
-    //     .catch(err => {
-    //         res.status(400).send("unable to save to database");
-    //     });
+    console.log(req.file);
+    console.log(req.body);
+    const attachmentInfo = req.file;
+    const fileData = {
+        ext: req.body.ext || '',
+        type: req.body.type || '',
+        fileType: attachmentInfo.mimetype || '',
+        size: attachmentInfo.size || null,
+        fileName: attachmentInfo.filename,
+        originalName: attachmentInfo.originalname,
+        path: `uploads/${attachmentInfo.filename}`
+    };
+    const attachmentData = new attachmentModel(fileData);
+    attachmentData.save((err, data) => {
+        if (err) {
+            return res.status(400).send({error: err})
+        }
+       return res.send({success: 'success'});
+    });
+
 });
 
 function getImage(req) {
