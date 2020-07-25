@@ -10,12 +10,12 @@ var upload = multer({ dest: 'uploads/' })
 router.post('/attachment-upload', upload.single('upload'), function(req, res, next) {
     // req.file is the `avatar` file
     // req.body will hold the text fields, if there were any
-    var myData = new attachmentModel(req.body);
+    var attachment = new attachmentModel(req.body);
     if (req.body.path) {
         // req.body.path = decodeBase64Image(req.body.path);
         getImage(req);
     }
-    // myData.save()
+    // attachment.save()
     //     .then(item => {
     //         res.json(item);
     //     })
