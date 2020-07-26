@@ -5,13 +5,13 @@ var fs = require('fs');
 var attachmentModel = require('../models/attachments');
 
 var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+    destination: function(req, file, cb) {
         const dir = 'uploads';
         fs.mkdir(dir, err => cb(null, 'uploads'));
-      },
-      filename: function (req, file, cb) {
+    },
+    filename: function(req, file, cb) {
         cb(null, Math.round(Math.random() * new Date().getTime()) + file.originalname);
-      }
+    }
 })
 var upload = multer({ storage: storage })
 
@@ -32,9 +32,9 @@ router.post('/attachment-upload', upload.single('upload'), function(req, res, ne
     const attachmentData = new attachmentModel(fileData);
     attachmentData.save((err, data) => {
         if (err) {
-            return res.status(400).send({error: err})
+            return res.status(400).send({ error: err })
         }
-       return res.send({success: 'success'});
+        return res.json(data);
     });
 
 });
@@ -47,8 +47,9 @@ function getImage(req) {
     console.log(fs.writeFileSync(req.body.path, buff));
 
 }
-router.get('/get-attachment', function(req, res, next) {
+router.post('/get-attachment', function(req, res, next) {
     console.log('here');
+    console.log(req.body.query);
     attachmentModel.find(req.body.query, (err, value) => {
         if (err) {
             console.log(err);
@@ -57,8 +58,8 @@ router.get('/get-attachment', function(req, res, next) {
         return res.json(value);
     });
 });
-router.delete('/delete-attachment', function(req, res) {
-    attachmentModel.remove({ _id: req.body.id }, function(err) {
+router.delete('/delete-attachment/:id', function(req, res) {
+    attachmentModel.remove({ _id: req.params.id }, function(err) {
         if (err) {
             return res.status(500).send(err);
         }
